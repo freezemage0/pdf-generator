@@ -22,7 +22,6 @@ final class IndirectObject implements ObjectInterface
         {$this->identity()} 0 obj
         {$this->compileOrigin()}
         endobj
-        
         COMPILED;
     }
 

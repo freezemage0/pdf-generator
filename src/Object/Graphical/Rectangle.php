@@ -16,20 +16,12 @@ final class Rectangle implements ObjectInterface
 
     public function getValue(): ArrayObject
     {
-        $dimensions = new ArrayObject();
-        if (isset($this->lowerLeft)) {
-            $dimensions->push(
-                new NumericObject($this->lowerLeft->x),
-                new NumericObject($this->lowerLeft->y)
-            );
-        }
-        if (isset($this->upperRight)) {
-            $dimensions->push(
-                new NumericObject($this->upperRight->x),
-                new NumericObject($this->upperRight->y)
-            );
-        }
-        return $dimensions;
+        return new ArrayObject(
+            new NumericObject($this->lowerLeft->x),
+            new NumericObject($this->lowerLeft->y),
+            new NumericObject($this->upperRight->x),
+            new NumericObject($this->upperRight->y)
+        );
     }
 
     public function compile(): string

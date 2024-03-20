@@ -3,6 +3,7 @@
 namespace Freezemage\PdfGenerator\Structure\Body;
 
 use Freezemage\PdfGenerator\Exception\InvalidObjectTypeException;
+use Freezemage\PdfGenerator\Exception\MissingRequiredArgumentException;
 use Freezemage\PdfGenerator\Object\Collection\DictionaryObject;
 use Freezemage\PdfGenerator\Object\IndirectReference;
 use Freezemage\PdfGenerator\Object\ObjectInterface;
@@ -10,17 +11,11 @@ use Freezemage\PdfGenerator\Object\Scalar\NameObject;
 
 final class DocumentCatalog implements ObjectInterface
 {
-    private DictionaryObject $dictionary;
-
-    public function __construct()
-    {
-        $this->dictionary = new DictionaryObject();
-        $this->dictionary->set(new NameObject('Type'), new NameObject('Catalog'));
-    }
+    private IndirectReference $rootPage;
 
     public function hasRootPage(): bool
     {
-        return $this->dictionary->get('Pages') !== null;
+        return isset($this->rootPage);
     }
 
     /**
@@ -32,16 +27,30 @@ final class DocumentCatalog implements ObjectInterface
             throw InvalidObjectTypeException::create('Root Page', 'page tree');
         }
 
-        $this->dictionary->set(new NameObject('Pages'), $rootPage);
+        $this->rootPage = $rootPage;
     }
 
+    /**
+     * @throws MissingRequiredArgumentException
+     */
     public function compile(): string
     {
-        return $this->dictionary->compile();
+        return $this->getValue()->compile();
     }
 
+    /**
+     * @throws MissingRequiredArgumentException
+     */
     public function getValue(): DictionaryObject
     {
-        return $this->dictionary;
+        $dictionary = new DictionaryObject();
+        $dictionary->set(new NameObject('Type'), new NameObject('Catalog'));
+
+        if (!$this->hasRootPage()) {
+            throw new MissingRequiredArgumentException('Document Catalog must have at root page tree');
+        }
+        $dictionary->set(new NameObject('Pages'), $this->rootPage);
+
+        return $dictionary;
     }
 }

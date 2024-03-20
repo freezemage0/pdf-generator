@@ -28,7 +28,7 @@ final class Body
         if (!$this->documentCatalog->hasRootPage()) {
             $this->rootPage = new PageTree();
             try {
-                $this->documentCatalog->setRootPage(new IndirectReference($this->rootPage));
+                $this->documentCatalog->setRootPage($this->rootPage->toIndirectReference());
             } catch (InvalidObjectTypeException) {
                 // Suppressed, never happens.
             }
@@ -47,7 +47,6 @@ final class Body
         $objects = [
             new IndirectObject($this->documentCatalog),
             new IndirectObject($this->rootPage),
-
             ...$this->objects
         ];
 

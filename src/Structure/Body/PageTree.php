@@ -8,18 +8,19 @@ use Freezemage\PdfGenerator\Object\Collection\DictionaryObject;
 use Freezemage\PdfGenerator\Object\IndirectObject;
 use Freezemage\PdfGenerator\Object\IndirectReference;
 use Freezemage\PdfGenerator\Object\ObjectInterface;
+use Freezemage\PdfGenerator\Object\ReferableObjectImplementation;
+use Freezemage\PdfGenerator\Object\ReferableObjectInterface;
 use Freezemage\PdfGenerator\Object\Scalar\NameObject;
 use Freezemage\PdfGenerator\Object\Scalar\NumericObject;
 
-class PageTree implements ObjectInterface
+final class PageTree implements ReferableObjectInterface
 {
-    private ?PageTree $parent = null;
-    private array $children;
+    use ReferableObjectImplementation;
 
-    public function __construct()
-    {
-        $this->children = [];
-    }
+    private ?PageTree $parent = null;
+
+    /** @var array<PageTree|PageObject> */
+    private array $children = [];
 
     public function addChild(PageTree|PageObject $child): void
     {
@@ -73,26 +74,25 @@ class PageTree implements ObjectInterface
 
     public function getValue(): DictionaryObject
     {
-        return new DictionaryObject();
-    }
-
-    public function compile(): string
-    {
         $dictionary = new DictionaryObject();
         $dictionary->set(new NameObject('Type'), new NameObject('Pages'));
         if (isset($this->parent)) {
-            $dictionary->set(new NameObject('Parent'), new IndirectReference($this->parent));
+            $dictionary->set(new NameObject('Parent'), $this->parent->toIndirectReference());
         }
 
         $childrenReferences = new ArrayObject();
-
         foreach ($this->children as $child) {
-            $childrenReferences->push(new IndirectReference($child));
+            $childrenReferences->push($child->toIndirectReference());
         }
 
         $dictionary->set(new NameObject('Kids'), $childrenReferences);
         $dictionary->set(new NameObject('Count'), new NumericObject($this->getCount()));
 
-        return $dictionary->compile();
+        return $dictionary;
+    }
+
+    public function compile(): string
+    {
+        return $this->getValue()->compile();
     }
 }
