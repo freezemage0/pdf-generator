@@ -31,6 +31,17 @@ final class Contents implements ObjectInterface
         $this->streams->push($stream);
     }
 
+    public function createStream(?Stream\ContentInterface $content = null): Stream
+    {
+        $stream = new Stream();
+        if ($content !== null) {
+            $stream->setContent($content);
+        }
+        $this->streams->push($stream->toIndirectReference());
+
+        return $stream;
+    }
+
     /**
      * @throws MissingRequiredArgumentException
      * @throws UnderflowException

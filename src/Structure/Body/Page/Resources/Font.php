@@ -18,6 +18,9 @@ final class Font implements ReferableObjectInterface
     private NameObject|IndirectReference $subType;
     private NameObject|IndirectReference $baseFont;
 
+    /**
+     * @throws InvalidObjectTypeException
+     */
     public function __construct(
         NameObject|IndirectReference $name = null,
         NameObject|IndirectReference $subType = null,

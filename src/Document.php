@@ -33,21 +33,11 @@ final class Document
         return $this->body->createPageTree();
     }
 
-    public function appendToBody(ObjectInterface $object): void
+    public function appendToBody(ObjectInterface ...$objects): void
     {
-        $this->body->addObject($object);
-    }
-
-    public function createStream(?Stream\ContentInterface $content = null): Stream
-    {
-        $stream = new Stream();
-        if ($content !== null) {
-            $stream->setContent($content);
+        foreach ($objects as $object) {
+            $this->body->addObject($object);
         }
-
-        $this->body->addObject($stream->toIndirectObject());
-
-        return $stream;
     }
 
     /**

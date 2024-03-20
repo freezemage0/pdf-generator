@@ -54,6 +54,11 @@ final class PageObject implements ObjectInterface
         $this->resources = $resources;
     }
 
+    public function getResources(): Resources
+    {
+        return $this->resources ??= new Resources();
+    }
+
     /**
      * @throws MissingRequiredArgumentException
      */
