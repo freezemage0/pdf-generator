@@ -29,7 +29,7 @@ final class CrossReferenceTable
             $marker = 'n';
 
             $offsets[] = "{$offset} {$generation} {$marker} ";
-            $initialByteOffset += $object->getSize();
+            $initialByteOffset += ($object->getSize() + 1); // Due to \n added between Indirect Objects.
         }
 
         $offsets = implode("\n", $offsets);

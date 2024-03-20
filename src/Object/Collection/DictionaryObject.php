@@ -14,6 +14,8 @@ use Traversable;
  */
 final class DictionaryObject implements ObjectInterface, IteratorAggregate
 {
+    private static int $sharedIndentationLevel = 0;
+
     /** @var array<string, KeyPair> */
     private array $entries = [];
 
@@ -43,17 +45,23 @@ final class DictionaryObject implements ObjectInterface, IteratorAggregate
 
     public function compile(): string
     {
-        $compiled = [];
+        $compiled = ['<<'];
+
+        DictionaryObject::$sharedIndentationLevel += 1;
+        $indentation = str_repeat(' ', DictionaryObject::$sharedIndentationLevel * 4);
         foreach ($this->entries as $pair) {
             if ($pair->value instanceof NullObject) {
                 continue;
             }
 
-            $compiled[] = "{$pair->key->compile()} {$pair->value->compile()}";
+            $compiled[] = "{$indentation}{$pair->key->compile()} {$pair->value->compile()}";
         }
-        $compiled = implode("\n", $compiled);
+        DictionaryObject::$sharedIndentationLevel -= 1;
+        $indentation = str_repeat(' ', DictionaryObject::$sharedIndentationLevel * 4);
 
-        return "<< {$compiled} >>";
+        $compiled[] = "{$indentation}>>";
+
+        return implode("\n", $compiled);
     }
 
     public function getIterator(): Traversable

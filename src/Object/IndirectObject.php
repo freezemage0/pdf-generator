@@ -20,7 +20,7 @@ final class IndirectObject implements ObjectInterface
     {
         return <<<COMPILED
         {$this->identity()} 0 obj
-            {$this->compileOrigin()}
+        {$this->compileOrigin()}
         endobj
         
         COMPILED;
