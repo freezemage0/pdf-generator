@@ -3,10 +3,13 @@
 namespace Freezemage\PdfGenerator\Object\Collection\Hierarchical;
 
 use Freezemage\PdfGenerator\Object\Collection\DictionaryObject;
-use Freezemage\PdfGenerator\Object\ObjectInterface;
+use Freezemage\PdfGenerator\Object\ReferableObjectImplementation;
+use Freezemage\PdfGenerator\Object\ReferableObjectInterface;
 
-final class NumberTree implements ObjectInterface
+final class NameTree implements ReferableObjectInterface
 {
+    use ReferableObjectImplementation;
+
     public function getValue(): DictionaryObject
     {
         return new DictionaryObject();

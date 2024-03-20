@@ -25,10 +25,8 @@ class Stream implements ReferableObjectInterface
      */
     public function setLength(NumericObject|IndirectReference $length): void
     {
-        if ($length instanceof IndirectReference) {
-            if (!$length->isOfType(NumericObject::class)) {
-                throw InvalidObjectTypeException::create('Length', 'numeric');
-            }
+        if ($length instanceof IndirectReference && !$length->isOfType(NumericObject::class)) {
+            throw InvalidObjectTypeException::create('Length', 'numeric');
         }
 
         $this->length = $length;
@@ -58,9 +56,6 @@ class Stream implements ReferableObjectInterface
         // TODO: Support all other optional parameters.
         $dictionary = new DictionaryObject();
         $dictionary->set(new NameObject('Length'), $this->length);
-        foreach ($this->filters as $filter) {
-            $filter->getName();
-        }
 
         return <<<COMPILED
         {$dictionary->compile()}

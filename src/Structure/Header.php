@@ -14,7 +14,6 @@ final class Header
     {
         return <<<HEADER
         %{$this->version->value}
-        %%EOF
         HEADER;
     }
 }

@@ -42,9 +42,4 @@ final class Text implements ContentInterface
         ET
         RENDERED;
     }
-
-    public function length(): int
-    {
-        return strlen($this->content->getValue());
-    }
 }
