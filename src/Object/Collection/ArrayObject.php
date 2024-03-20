@@ -3,6 +3,7 @@
 namespace Freezemage\PdfGenerator\Object\Collection;
 
 use ArrayIterator;
+use Freezemage\PdfGenerator\Exception\UnderflowException;
 use Freezemage\PdfGenerator\Object\ObjectInterface;
 use IteratorAggregate;
 use Traversable;
@@ -25,9 +26,37 @@ final class ArrayObject implements ObjectInterface, IteratorAggregate
         }
     }
 
+    /**
+     * @throws UnderflowException
+     */
+    public function pop(): ObjectInterface
+    {
+        if ($this->isEmpty()) {
+            throw UnderflowException::create();
+        }
+
+        return array_pop($this->objects);
+    }
+
+    /**
+     * @throws UnderflowException
+     */
+    public function top(): ObjectInterface
+    {
+        $object = $this->pop();
+        $this->push($object);
+
+        return $object;
+    }
+
     public function isEmpty(): bool
     {
         return empty($this->objects);
+    }
+
+    public function count(): int
+    {
+        return count($this->objects);
     }
 
     public function compile(): string

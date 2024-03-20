@@ -6,13 +6,36 @@ use Freezemage\PdfGenerator\Exception\InvalidObjectTypeException;
 use Freezemage\PdfGenerator\Object\Collection\DictionaryObject;
 use Freezemage\PdfGenerator\Object\IndirectReference;
 use Freezemage\PdfGenerator\Object\ObjectInterface;
+use Freezemage\PdfGenerator\Object\ReferableObjectImplementation;
+use Freezemage\PdfGenerator\Object\ReferableObjectInterface;
 use Freezemage\PdfGenerator\Object\Scalar\NameObject;
 
-final class Font implements ObjectInterface
+final class Font implements ReferableObjectInterface
 {
+    use ReferableObjectImplementation;
+
     private NameObject|IndirectReference $name;
     private NameObject|IndirectReference $subType;
     private NameObject|IndirectReference $baseFont;
+
+    public function __construct(
+        NameObject|IndirectReference $name = null,
+        NameObject|IndirectReference $subType = null,
+        NameObject|IndirectReference $baseFont = null
+    ) {
+        if (isset($name)) {
+            $this->setName($name);
+        }
+
+        if (isset($subType)) {
+            $this->setSubtype($subType);
+        }
+
+        if (isset($baseFont)) {
+            $this->setBaseFont($baseFont);
+        }
+    }
+
 
     /**
      * @throws InvalidObjectTypeException
@@ -26,6 +49,10 @@ final class Font implements ObjectInterface
         $this->name = $name;
     }
 
+    public function getName(): NameObject|IndirectReference
+    {
+        return $this->name;
+    }
 
     /**
      * @throws InvalidObjectTypeException

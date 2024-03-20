@@ -29,7 +29,7 @@ final class DocumentCatalog implements ObjectInterface
     public function setRootPage(IndirectReference $rootPage): void
     {
         if (!$rootPage->isOfType(PageTree::class)) {
-            throw InvalidObjectTypeException::create('Page', 'dictionary');
+            throw InvalidObjectTypeException::create('Root Page', 'page tree');
         }
 
         $this->dictionary->set(new NameObject('Pages'), $rootPage);

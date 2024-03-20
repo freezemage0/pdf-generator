@@ -21,16 +21,15 @@ final class CrossReferenceTable
 
     public function compile(int $initialByteOffset): string
     {
-        $offsets = ["0000000000 65535 f"];
+        $offsets = ["0000000000 65535 f"]; // Default invalid offset.
 
-        $globalOffset = $initialByteOffset;
         foreach ($this->objects as $object) {
-            $offset = str_pad((string) $globalOffset, 10, '0', STR_PAD_LEFT);
+            $offset = str_pad((string) $initialByteOffset, 10, '0', STR_PAD_LEFT);
             $generation = str_pad('0', 5, '0', STR_PAD_LEFT);
             $marker = 'n';
 
             $offsets[] = "{$offset} {$generation} {$marker} ";
-            $globalOffset += $object->getSize();
+            $initialByteOffset += $object->getSize();
         }
 
         $offsets = implode("\n", $offsets);

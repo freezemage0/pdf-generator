@@ -25,18 +25,28 @@ final class Resources implements ObjectInterface
     /**
      * @throws InvalidObjectTypeException
      */
-    public function addFont(NameObject $name, IndirectReference|Font $font): void
+    public function addFont(IndirectReference|Font $font): void
     {
-        if ($font instanceof IndirectReference && !$font->isOfType(Font::class)) {
-            throw InvalidObjectTypeException::create('Font', 'font');
+        if ($font instanceof IndirectReference) {
+            if (!$font->isOfType(Font::class)) {
+                throw InvalidObjectTypeException::create('Font', 'font');
+            }
+
+            /** @var Font $origin */
+            $origin = $font->getOrigin();
+            $name = $origin->getName();
+        } else {
+            $name = $font->getName();
         }
 
         $this->font->set($name, $font);
     }
 
-    public function addProcedure(Procedure $procedure): void
+    public function addProcedure(Procedure ...$procedures): void
     {
-        $this->procedureSet->push(new NameObject($procedure->value));
+        foreach ($procedures as $procedure) {
+            $this->procedureSet->push(new NameObject($procedure->value));
+        }
     }
 
     public function getValue(): DictionaryObject

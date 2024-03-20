@@ -11,8 +11,11 @@ use Freezemage\PdfGenerator\Object\Scalar\NumericObject;
 use Freezemage\PdfGenerator\Object\Stream\ContentInterface;
 use Freezemage\PdfGenerator\Object\Stream\FilterInterface;
 
-class Stream implements ObjectInterface
+class Stream implements ReferableObjectInterface
 {
+    use ReferableObjectImplementation;
+
+    /** @var array<FilterInterface> */
     private array $filters = [];
     private NumericObject|IndirectReference $length;
     private ContentInterface $content;
@@ -55,6 +58,9 @@ class Stream implements ObjectInterface
         // TODO: Support all other optional parameters.
         $dictionary = new DictionaryObject();
         $dictionary->set(new NameObject('Length'), $this->length);
+        foreach ($this->filters as $filter) {
+            $filter->getName();
+        }
 
         return <<<COMPILED
         {$dictionary->compile()}

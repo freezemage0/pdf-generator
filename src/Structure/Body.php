@@ -2,6 +2,7 @@
 
 namespace Freezemage\PdfGenerator\Structure;
 
+use Freezemage\PdfGenerator\Exception\InvalidObjectTypeException;
 use Freezemage\PdfGenerator\Object\IndirectObject;
 use Freezemage\PdfGenerator\Object\IndirectReference;
 use Freezemage\PdfGenerator\Object\ObjectInterface;
@@ -22,17 +23,18 @@ final class Body
         $this->crossReferenceTable = $crossReferenceTable;
     }
 
-    public function createPage(): PageTree
+    public function createPageTree(): PageTree
     {
         if (!$this->documentCatalog->hasRootPage()) {
             $this->rootPage = new PageTree();
-            $this->documentCatalog->setRootPage(new IndirectReference($this->rootPage));
+            try {
+                $this->documentCatalog->setRootPage(new IndirectReference($this->rootPage));
+            } catch (InvalidObjectTypeException) {
+                // Suppressed, never happens.
+            }
         }
 
-        $page = new PageTree();
-        $this->rootPage->addChild($page);
-
-        return $page;
+        return $this->rootPage->createPageTree();
     }
 
     public function addObject(ObjectInterface $object): void

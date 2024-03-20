@@ -5,27 +5,28 @@ namespace Freezemage\PdfGenerator\Structure;
 use Freezemage\PdfGenerator\Exception\MissingRequiredArgumentException;
 use Freezemage\PdfGenerator\Object\Collection\DictionaryObject;
 use Freezemage\PdfGenerator\Object\IndirectReference;
+use Freezemage\PdfGenerator\Object\ObjectInterface;
 use Freezemage\PdfGenerator\Object\Scalar\NameObject;
 use Freezemage\PdfGenerator\Object\Scalar\NumericObject;
 
-final class Trailer
+final class Trailer implements ObjectInterface
 {
-    private DictionaryObject $dictionary;
+    private IndirectReference $root;
+    private NumericObject $size;
     private int $lastXrefSectionOffset;
 
     public function __construct()
     {
-        $this->dictionary = new DictionaryObject();
     }
 
     public function setSize(NumericObject $size): void
     {
-        $this->dictionary->set(new NameObject('Size'), $size);
+        $this->size = $size;
     }
 
     public function setRoot(IndirectReference $root): void
     {
-        $this->dictionary->set(new NameObject('Root'), $root);
+        $this->root = $root;
     }
 
     public function setLastXrefSectionOffset(int $offset): void
@@ -44,10 +45,29 @@ final class Trailer
 
         return <<<COMPILED
         trailer
-        {$this->dictionary->compile()}
+        {$this->getValue()->compile()}
         startxref
         {$this->lastXrefSectionOffset}
         %%EOF
         COMPILED;
+    }
+
+    /**
+     * @throws MissingRequiredArgumentException
+     */
+    public function getValue(): DictionaryObject
+    {
+        if (!isset($this->root)) {
+            throw MissingRequiredArgumentException::create('Root');
+        }
+        if (!isset($this->size)) {
+            throw MissingRequiredArgumentException::create('Size');
+        }
+
+        $dictionary = new DictionaryObject();
+        $dictionary->set(new NameObject('Root'), $this->root);
+        $dictionary->set(new NameObject('Size'), $this->size);
+
+        return $dictionary;
     }
 }

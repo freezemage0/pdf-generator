@@ -3,19 +3,20 @@
 namespace Freezemage\PdfGenerator\Structure\Body;
 
 use Freezemage\PdfGenerator\Exception\InvalidObjectTypeException;
+use Freezemage\PdfGenerator\Exception\MissingRequiredArgumentException;
 use Freezemage\PdfGenerator\Object\Collection\DictionaryObject;
+use Freezemage\PdfGenerator\Object\Graphical\Rectangle;
 use Freezemage\PdfGenerator\Object\IndirectReference;
 use Freezemage\PdfGenerator\Object\ObjectInterface;
 use Freezemage\PdfGenerator\Object\Scalar\NameObject;
-use Freezemage\PdfGenerator\Object\Stream;
-use Freezemage\PdfGenerator\Structure\Body\Page\Rectangle;
+use Freezemage\PdfGenerator\Structure\Body\Page\Contents;
 use Freezemage\PdfGenerator\Structure\Body\Page\Resources;
 
 final class PageObject implements ObjectInterface
 {
     private PageTree $parent;
     private Rectangle $mediaBox;
-    private IndirectReference|Stream $contents;
+    private Contents $contents;
     private Resources $resources;
 
     public function setParent(PageTree $parent): void
@@ -28,32 +29,42 @@ final class PageObject implements ObjectInterface
         $this->mediaBox = $mediaBox;
     }
 
+    public function getContents(): Contents
+    {
+        return $this->contents ??= new Contents();
+    }
+
     /**
      * @throws InvalidObjectTypeException
      */
-    public function setContents(IndirectReference|Stream $contents): void
+    public function setContents(Contents $contents): void
     {
-        if ($contents instanceof IndirectReference && !$contents->isOfType(Stream::class)) {
-            throw InvalidObjectTypeException::create('Contents', 'stream');
-        }
-
         $this->contents = $contents;
     }
 
-    public function setResources(Resources $resources): void
+    /**
+     * @throws InvalidObjectTypeException
+     */
+    public function setResources(IndirectReference|Resources $resources): void
     {
+        if ($resources instanceof IndirectReference && !$resources->isOfType(Resources::class)) {
+            throw InvalidObjectTypeException::create('Resources', 'resources');
+        }
+
         $this->resources = $resources;
     }
 
-    public function getValue(): mixed
-    {
-        return null;
-    }
-
-    public function compile(): string
+    /**
+     * @throws MissingRequiredArgumentException
+     */
+    public function getValue(): DictionaryObject
     {
         $dictionary = new DictionaryObject();
         $dictionary->set(new NameObject('Type'), new NameObject('Page'));
+        if (!isset($this->parent)) {
+            throw new MissingRequiredArgumentException('Parent');
+        }
+
         $dictionary->set(new NameObject('Parent'), new IndirectReference($this->parent));
         $dictionary->set(new NameObject('MediaBox'), $this->mediaBox);
 
@@ -64,7 +75,14 @@ final class PageObject implements ObjectInterface
         if (isset($this->contents)) {
             $dictionary->set(new NameObject('Contents'), $this->contents);
         }
+        return $dictionary;
+    }
 
-        return $dictionary->compile();
+    /**
+     * @throws MissingRequiredArgumentException
+     */
+    public function compile(): string
+    {
+        return $this->getValue()->compile();
     }
 }

@@ -27,6 +27,22 @@ class PageTree implements ObjectInterface
         $child->setParent($this);
     }
 
+    public function createPageTree(): PageTree
+    {
+        $pageTree = new PageTree();
+        $this->addChild($pageTree);
+
+        return $pageTree;
+    }
+
+    public function createPageObject(): PageObject
+    {
+        $pageObject = new PageObject();
+        $this->addChild($pageObject);
+
+        return $pageObject;
+    }
+
     public function setParent(PageTree $parent): void
     {
         $this->parent = $parent;
@@ -36,11 +52,7 @@ class PageTree implements ObjectInterface
     {
         $count = 0;
         foreach ($this->children as $child) {
-            if ($child instanceof PageTree) {
-                $count += $child->getCount();
-            } else {
-                $count += 1;
-            }
+            $count += ($child instanceof PageTree) ? $child->getCount() : 1;
         }
 
         return $count;

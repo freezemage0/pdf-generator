@@ -8,6 +8,7 @@ use Freezemage\PdfGenerator\Object\IndirectObject;
 use Freezemage\PdfGenerator\Object\IndirectReference;
 use Freezemage\PdfGenerator\Object\ObjectInterface;
 use Freezemage\PdfGenerator\Object\Scalar\NumericObject;
+use Freezemage\PdfGenerator\Object\Stream;
 use Freezemage\PdfGenerator\Structure\Body;
 use Freezemage\PdfGenerator\Structure\CrossReferenceTable;
 use Freezemage\PdfGenerator\Structure\Header;
@@ -19,24 +20,34 @@ final class Document
     private readonly Header $header;
     private readonly Body $body;
     private readonly CrossReferenceTable $crossReferenceTable;
-    private readonly Trailer $trailer;
 
     public function __construct(Version $version)
     {
         $this->header = new Header($version);
         $this->crossReferenceTable = new CrossReferenceTable();
         $this->body = new Body($this->crossReferenceTable);
-        $this->trailer = new Trailer();
     }
 
     public function createPage(): Body\PageTree
     {
-        return $this->body->createPage();
+        return $this->body->createPageTree();
     }
 
     public function appendToBody(ObjectInterface $object): void
     {
         $this->body->addObject($object);
+    }
+
+    public function createStream(?Stream\ContentInterface $content = null): Stream
+    {
+        $stream = new Stream();
+        if ($content !== null) {
+            $stream->setContent($content);
+        }
+
+        $this->body->addObject($stream->toIndirectObject());
+
+        return $stream;
     }
 
     /**
@@ -61,13 +72,12 @@ final class Document
         $compiledXrefTable = $this->crossReferenceTable->compile(strlen($header)) . "\n\n";
         fwrite($descriptor, $compiledXrefTable);
 
-        $this->trailer->setRoot(new IndirectReference($this->body->documentCatalog));
-        $compiledBodyLength = strlen($compiledBody);
-        $compiledXrefTableLength = strlen($compiledXrefTable);
-        $this->trailer->setLastXrefSectionOffset($compiledBodyLength);
-        $this->trailer->setSize(new NumericObject($this->crossReferenceTable->count()));
+        $trailer = new Trailer();
+        $trailer->setRoot(new IndirectReference($this->body->documentCatalog));
+        $trailer->setSize(new NumericObject($this->crossReferenceTable->count()));
+        $trailer->setLastXrefSectionOffset(strlen($compiledBody));
 
-        fwrite($descriptor, $this->trailer->compile());
+        fwrite($descriptor, $trailer->compile());
 
         fclose($descriptor);
     }
