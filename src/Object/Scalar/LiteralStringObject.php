@@ -2,10 +2,13 @@
 
 namespace Freezemage\PdfGenerator\Object\Scalar;
 
-use Freezemage\PdfGenerator\Object\ObjectInterface;
+use Freezemage\PdfGenerator\Object\ReferableObjectImplementation;
+use Freezemage\PdfGenerator\Object\ReferableObjectInterface;
 
-final class LiteralStringObject implements ObjectInterface
+final class LiteralStringObject implements ReferableObjectInterface
 {
+    use ReferableObjectImplementation;
+
     public function __construct(public readonly string $value)
     {
     }

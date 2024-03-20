@@ -8,7 +8,6 @@ use Freezemage\PdfGenerator\Object\Scalar\NameObject;
 
 final class CcittFaxDecode implements FilterInterface
 {
-
     public function getName(): NameObject
     {
         return new NameObject('CCITTDecode');

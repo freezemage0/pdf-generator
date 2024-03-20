@@ -5,6 +5,8 @@ namespace Freezemage\PdfGenerator\Object\Collection;
 use ArrayIterator;
 use Freezemage\PdfGenerator\Object\NullObject;
 use Freezemage\PdfGenerator\Object\ObjectInterface;
+use Freezemage\PdfGenerator\Object\ReferableObjectImplementation;
+use Freezemage\PdfGenerator\Object\ReferableObjectInterface;
 use Freezemage\PdfGenerator\Object\Scalar\NameObject;
 use IteratorAggregate;
 use Traversable;
@@ -12,8 +14,10 @@ use Traversable;
 /**
  * @template-implements IteratorAggregate<int, array{0: NameObject, 1: ObjectInterface}>
  */
-final class DictionaryObject implements ObjectInterface, IteratorAggregate
+final class DictionaryObject implements ReferableObjectInterface, IteratorAggregate
 {
+    use ReferableObjectImplementation;
+
     private static int $sharedIndentationLevel = 0;
 
     /** @var array<string, KeyPair> */

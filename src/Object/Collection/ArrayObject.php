@@ -5,14 +5,18 @@ namespace Freezemage\PdfGenerator\Object\Collection;
 use ArrayIterator;
 use Freezemage\PdfGenerator\Exception\UnderflowException;
 use Freezemage\PdfGenerator\Object\ObjectInterface;
+use Freezemage\PdfGenerator\Object\ReferableObjectImplementation;
+use Freezemage\PdfGenerator\Object\ReferableObjectInterface;
 use IteratorAggregate;
 use Traversable;
 
 /**
  * @template-implements IteratorAggregate<int, ObjectInterface>
  */
-final class ArrayObject implements ObjectInterface, IteratorAggregate
+final class ArrayObject implements ReferableObjectInterface, IteratorAggregate
 {
+    use ReferableObjectImplementation;
+
     private array $objects;
 
     public function __construct(ObjectInterface ...$objects) {
