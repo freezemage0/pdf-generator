@@ -3,6 +3,7 @@
 namespace Freezemage\PdfGenerator\Object\Collection;
 
 use ArrayIterator;
+use Freezemage\PdfGenerator\Encoding\CharacterSet;
 use Freezemage\PdfGenerator\Exception\UnderflowException;
 use Freezemage\PdfGenerator\Object\ObjectInterface;
 use Freezemage\PdfGenerator\Object\ReferableObjectImplementation;
@@ -65,7 +66,11 @@ final class ArrayObject implements ReferableObjectInterface, IteratorAggregate
 
     public function compile(): string
     {
-        $objects = array_map(static fn (ObjectInterface $object): string => $object->compile(), $this->objects);
+        $objects = array_map(
+            static fn(ObjectInterface $object): string => $object->compile(),
+            $this->objects
+        );
+
         return '[' . implode(' ', $objects) . ']';
     }
 

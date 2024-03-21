@@ -6,11 +6,14 @@ use Freezemage\PdfGenerator\Exception\InvalidObjectTypeException;
 use Freezemage\PdfGenerator\Exception\MissingRequiredArgumentException;
 use Freezemage\PdfGenerator\Object\Collection\DictionaryObject;
 use Freezemage\PdfGenerator\Object\IndirectReference;
-use Freezemage\PdfGenerator\Object\ObjectInterface;
+use Freezemage\PdfGenerator\Object\ReferableObjectImplementation;
+use Freezemage\PdfGenerator\Object\ReferableObjectInterface;
 use Freezemage\PdfGenerator\Object\Scalar\NameObject;
 
-final class DocumentCatalog implements ObjectInterface
+final class DocumentCatalog implements ReferableObjectInterface
 {
+    use ReferableObjectImplementation;
+
     private IndirectReference $rootPage;
 
     public function hasRootPage(): bool

@@ -2,9 +2,11 @@
 
 namespace Freezemage\PdfGenerator\Object;
 
+use Freezemage\PdfGenerator\Encoding\CharacterSet;
+
 final class IndirectObject implements ObjectInterface
 {
-    private string $compiledOrigin;
+    private int $size;
     private int $identity;
 
     public function __construct(public readonly ObjectInterface $object)
@@ -13,26 +15,27 @@ final class IndirectObject implements ObjectInterface
 
     public function getSize(): int
     {
-        return strlen($this->compile());
+        return $this->size;
     }
 
     public function compile(): string
     {
-        return <<<COMPILED
+        $compiled = <<<COMPILED
         {$this->identity()} 0 obj
-        {$this->compileOrigin()}
+        {$this->object->compile()}
         endobj
         COMPILED;
+
+        if (!isset($this->size)) {
+            $this->size = strlen($compiled);
+        }
+
+        return $compiled;
     }
 
     public function getValue(): ObjectInterface
     {
         return $this->object;
-    }
-
-    private function compileOrigin(): string
-    {
-        return $this->compiledOrigin ??= $this->object->compile();
     }
 
     private function identity(): int

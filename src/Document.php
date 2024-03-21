@@ -2,11 +2,13 @@
 
 namespace Freezemage\PdfGenerator;
 
+use Freezemage\PdfGenerator\Encoding\CharacterSet;
 use Freezemage\PdfGenerator\Exception\InvalidArgumentValueException;
 use Freezemage\PdfGenerator\Exception\MissingRequiredArgumentException;
 use Freezemage\PdfGenerator\Object\IndirectObject;
 use Freezemage\PdfGenerator\Object\IndirectReference;
 use Freezemage\PdfGenerator\Object\ObjectInterface;
+use Freezemage\PdfGenerator\Object\ReferableObjectInterface;
 use Freezemage\PdfGenerator\Object\Scalar\NumericObject;
 use Freezemage\PdfGenerator\Object\Stream;
 use Freezemage\PdfGenerator\Structure\Body;
@@ -33,10 +35,10 @@ final class Document
         return $this->body->createPageTree();
     }
 
-    public function appendToBody(ObjectInterface ...$objects): void
+    public function appendToBody(ReferableObjectInterface ...$objects): void
     {
         foreach ($objects as $object) {
-            $this->body->addObject($object);
+            $this->body->addObject($object->toIndirectObject());
         }
     }
 
@@ -63,7 +65,7 @@ final class Document
         fwrite($descriptor, $compiledXrefTable);
 
         $trailer = new Trailer();
-        $trailer->setRoot(new IndirectReference($this->body->documentCatalog));
+        $trailer->setRoot($this->body->documentCatalog->toIndirectReference());
         $trailer->setSize(new NumericObject($this->crossReferenceTable->count()));
         $trailer->setLastXrefSectionOffset(strlen($compiledBody));
 

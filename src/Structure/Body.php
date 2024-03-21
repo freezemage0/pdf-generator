@@ -2,20 +2,19 @@
 
 namespace Freezemage\PdfGenerator\Structure;
 
+use Freezemage\PdfGenerator\Encoding\CharacterSet;
 use Freezemage\PdfGenerator\Exception\InvalidObjectTypeException;
 use Freezemage\PdfGenerator\Object\IndirectObject;
-use Freezemage\PdfGenerator\Object\IndirectReference;
-use Freezemage\PdfGenerator\Object\ObjectInterface;
 use Freezemage\PdfGenerator\Structure\Body\DocumentCatalog;
 use Freezemage\PdfGenerator\Structure\Body\PageTree;
 
 final class Body
 {
-    public readonly DocumentCatalog $documentCatalog;
-    private PageTree $rootPage;
-    /** @var array<ObjectInterface> */
+    /** @var array<IndirectObject> */
     private array $objects = [];
-    private CrossReferenceTable $crossReferenceTable;
+    private ?PageTree $rootPage = null;
+    public readonly DocumentCatalog $documentCatalog;
+    private readonly CrossReferenceTable $crossReferenceTable;
 
     public function __construct(CrossReferenceTable $crossReferenceTable)
     {
@@ -25,8 +24,9 @@ final class Body
 
     public function createPageTree(): PageTree
     {
-        if (!$this->documentCatalog->hasRootPage()) {
+        if ($this->rootPage === null) {
             $this->rootPage = new PageTree();
+
             try {
                 $this->documentCatalog->setRootPage($this->rootPage->toIndirectReference());
             } catch (InvalidObjectTypeException) {
@@ -37,7 +37,15 @@ final class Body
         return $this->rootPage->createPageTree();
     }
 
-    public function addObject(ObjectInterface $object): void
+    /**
+     * See Adobe PDF Specification p. 7.5.3 "File Body":
+     *
+     * The body of a PDF file shall consist of a sequence of indirect objects.
+     *
+     * @param IndirectObject $object
+     * @return void
+     */
+    public function addObject(IndirectObject $object): void
     {
         $this->objects[] = $object;
     }
@@ -45,20 +53,18 @@ final class Body
     public function compile(): string
     {
         $objects = [
-            new IndirectObject($this->documentCatalog),
-            new IndirectObject($this->rootPage),
+            $this->documentCatalog->toIndirectObject(),
+            $this->rootPage->toIndirectObject(),
             ...$this->objects
         ];
 
         foreach ($this->rootPage->collectChildren() as $child) {
-            $objects[] = new IndirectObject($child);
+            $objects[] = $child->toIndirectObject();
         }
 
         $compiled = [];
         foreach ($objects as $object) {
-            if ($object instanceof IndirectObject) {
-                $this->crossReferenceTable->register($object);
-            }
+            $this->crossReferenceTable->register($object);
 
             $compiled[] = $object->compile();
         }

@@ -3,6 +3,7 @@
 namespace Freezemage\PdfGenerator\Object\Collection;
 
 use ArrayIterator;
+use Freezemage\PdfGenerator\Encoding\CharacterSet;
 use Freezemage\PdfGenerator\Object\NullObject;
 use Freezemage\PdfGenerator\Object\ObjectInterface;
 use Freezemage\PdfGenerator\Object\ReferableObjectImplementation;

@@ -3,6 +3,7 @@
 namespace Freezemage\PdfGenerator\Object\Chronological;
 
 use DateTime;
+use Freezemage\PdfGenerator\Encoding\CharacterSet;
 use Freezemage\PdfGenerator\Object\ReferableObjectImplementation;
 use Freezemage\PdfGenerator\Object\ReferableObjectInterface;
 

@@ -23,6 +23,8 @@ final class Resources implements ObjectInterface
     }
 
     /**
+     * @param IndirectReference<Font>|Font $font
+     *
      * @throws InvalidObjectTypeException
      */
     public function addFont(IndirectReference|Font $font): void
@@ -32,8 +34,7 @@ final class Resources implements ObjectInterface
                 throw InvalidObjectTypeException::create('Font', 'font');
             }
 
-            /** @var Font $origin */
-            $origin = $font->getOrigin();
+            $origin = $font->object->getValue();
             $name = $origin->getName();
         } else {
             $name = $font->getName();

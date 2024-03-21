@@ -8,6 +8,7 @@ final class NullObject implements ObjectInterface
     {
         return '';
     }
+
     public function getValue(): mixed
     {
         return null;

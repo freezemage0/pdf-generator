@@ -2,6 +2,7 @@
 
 namespace Freezemage\PdfGenerator\Object;
 
+
 final class IndirectReference implements ObjectInterface
 {
     public function __construct(public readonly ObjectInterface $object)

@@ -59,6 +59,9 @@ final class PageTree implements ReferableObjectInterface
         return $count;
     }
 
+    /**
+     * @return array<PageObject|PageTree>
+     */
     public function collectChildren(): array
     {
         $children = [];
