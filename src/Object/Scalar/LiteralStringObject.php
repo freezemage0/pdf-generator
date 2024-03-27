@@ -19,6 +19,7 @@ final class LiteralStringObject implements ReferableObjectInterface
 
         return "({$value})";
     }
+
     public function getValue(): string
     {
         return $this->value;

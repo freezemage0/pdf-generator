@@ -24,7 +24,7 @@ final class CrossReferenceTable
         $offsets = ["0000000000 65535 f"]; // Default invalid offset.
 
         foreach ($this->objects as $object) {
-            $offset = str_pad((string) $initialByteOffset, 10, '0', STR_PAD_LEFT);
+            $offset = str_pad((string)$initialByteOffset, 10, '0', STR_PAD_LEFT);
             $generation = str_pad('0', 5, '0', STR_PAD_LEFT);
             $marker = 'n';
 

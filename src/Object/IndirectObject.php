@@ -2,8 +2,6 @@
 
 namespace Freezemage\PdfGenerator\Object;
 
-use Freezemage\PdfGenerator\Encoding\CharacterSet;
-
 final class IndirectObject implements ObjectInterface
 {
     private int $size;

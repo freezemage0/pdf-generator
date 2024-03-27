@@ -7,7 +7,6 @@ use Freezemage\PdfGenerator\Exception\MissingRequiredArgumentException;
 use Freezemage\PdfGenerator\Object\Collection\DictionaryObject;
 use Freezemage\PdfGenerator\Object\Graphical\Rectangle;
 use Freezemage\PdfGenerator\Object\IndirectReference;
-use Freezemage\PdfGenerator\Object\ObjectInterface;
 use Freezemage\PdfGenerator\Object\ReferableObjectImplementation;
 use Freezemage\PdfGenerator\Object\ReferableObjectInterface;
 use Freezemage\PdfGenerator\Object\Scalar\NameObject;

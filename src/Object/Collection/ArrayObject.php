@@ -3,7 +3,6 @@
 namespace Freezemage\PdfGenerator\Object\Collection;
 
 use ArrayIterator;
-use Freezemage\PdfGenerator\Encoding\CharacterSet;
 use Freezemage\PdfGenerator\Exception\UnderflowException;
 use Freezemage\PdfGenerator\Object\ObjectInterface;
 use Freezemage\PdfGenerator\Object\ReferableObjectImplementation;
@@ -20,7 +19,8 @@ final class ArrayObject implements ReferableObjectInterface, IteratorAggregate
 
     private array $objects;
 
-    public function __construct(ObjectInterface ...$objects) {
+    public function __construct(ObjectInterface ...$objects)
+    {
         $this->objects = $objects;
     }
 

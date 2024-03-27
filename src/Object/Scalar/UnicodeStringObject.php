@@ -4,10 +4,7 @@ namespace Freezemage\PdfGenerator\Object\Scalar;
 
 use Freezemage\PdfGenerator\Object\ReferableObjectImplementation;
 use Freezemage\PdfGenerator\Object\ReferableObjectInterface;
-use IntlBreakIterator;
-use IntlChar;
 use Transliterator;
-use UConverter;
 
 final class UnicodeStringObject implements ReferableObjectInterface
 {

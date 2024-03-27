@@ -2,11 +2,13 @@
 
 namespace Freezemage\PdfGenerator\Structure;
 
-use Freezemage\PdfGenerator\Encoding\CharacterSet;
 use Freezemage\PdfGenerator\Exception\InvalidObjectTypeException;
 use Freezemage\PdfGenerator\Object\IndirectObject;
 use Freezemage\PdfGenerator\Structure\Body\DocumentCatalog;
 use Freezemage\PdfGenerator\Structure\Body\PageTree;
+use Freezemage\PdfGenerator\Version\ConstraintException;
+use Freezemage\PdfGenerator\Version\Evaluator;
+use Freezemage\PdfGenerator\Version\VersionDependentInterface;
 
 final class Body
 {
@@ -50,7 +52,10 @@ final class Body
         $this->objects[] = $object;
     }
 
-    public function compile(): string
+    /**
+     * @throws ConstraintException
+     */
+    public function compile(Evaluator $versionEvaluator): string
     {
         $objects = [
             $this->documentCatalog->toIndirectObject(),
@@ -60,6 +65,13 @@ final class Body
 
         foreach ($this->rootPage->collectChildren() as $child) {
             $objects[] = $child->toIndirectObject();
+        }
+
+        foreach ($objects as $object) {
+            /** @var IndirectObject $object */
+            if ($object->object instanceof VersionDependentInterface) {
+                $versionEvaluator->evaluate($object->object);
+            }
         }
 
         $compiled = [];

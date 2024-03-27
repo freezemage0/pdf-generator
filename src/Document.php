@@ -2,32 +2,32 @@
 
 namespace Freezemage\PdfGenerator;
 
-use Freezemage\PdfGenerator\Encoding\CharacterSet;
 use Freezemage\PdfGenerator\Exception\InvalidArgumentValueException;
 use Freezemage\PdfGenerator\Exception\MissingRequiredArgumentException;
-use Freezemage\PdfGenerator\Object\IndirectObject;
-use Freezemage\PdfGenerator\Object\IndirectReference;
-use Freezemage\PdfGenerator\Object\ObjectInterface;
 use Freezemage\PdfGenerator\Object\ReferableObjectInterface;
 use Freezemage\PdfGenerator\Object\Scalar\NumericObject;
-use Freezemage\PdfGenerator\Object\Stream;
 use Freezemage\PdfGenerator\Structure\Body;
 use Freezemage\PdfGenerator\Structure\CrossReferenceTable;
 use Freezemage\PdfGenerator\Structure\Header;
 use Freezemage\PdfGenerator\Structure\Header\Version;
 use Freezemage\PdfGenerator\Structure\Trailer;
+use Freezemage\PdfGenerator\Version\Comparator;
+use Freezemage\PdfGenerator\Version\ConstraintException;
+use Freezemage\PdfGenerator\Version\Evaluator;
 
 final class Document
 {
     private readonly Header $header;
     private readonly Body $body;
     private readonly CrossReferenceTable $crossReferenceTable;
+    private readonly Evaluator $versionEvaluator;
 
-    public function __construct(Version $version)
+    public function __construct(Version $version, ?Evaluator $evaluator = null)
     {
         $this->header = new Header($version);
         $this->crossReferenceTable = new CrossReferenceTable();
         $this->body = new Body($this->crossReferenceTable);
+        $this->versionEvaluator = $evaluator ?? new Evaluator(new Comparator(), $version);
     }
 
     public function createPage(): Body\PageTree
@@ -45,6 +45,7 @@ final class Document
     /**
      * @throws InvalidArgumentValueException
      * @throws MissingRequiredArgumentException
+     * @throws ConstraintException
      */
     public function save(string $filepath): void
     {
@@ -58,7 +59,7 @@ final class Document
         $header = $this->header->compile() . "\n";
         fwrite($descriptor, $header);
 
-        $compiledBody = $this->body->compile() . "\n";
+        $compiledBody = $this->body->compile($this->versionEvaluator) . "\n";
         fwrite($descriptor, $compiledBody);
 
         $compiledXrefTable = $this->crossReferenceTable->compile(strlen($header)) . "\n\n";

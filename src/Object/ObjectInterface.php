@@ -2,7 +2,8 @@
 
 namespace Freezemage\PdfGenerator\Object;
 
-interface ObjectInterface {
+interface ObjectInterface
+{
     public function getValue(): mixed;
 
     public function compile(): string;

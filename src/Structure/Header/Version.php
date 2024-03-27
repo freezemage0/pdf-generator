@@ -12,4 +12,9 @@ enum Version: string
     case PDF_1_5 = 'PDF-1.5';
     case PDF_1_6 = 'PDF-1.6';
     case PDF_1_7 = 'PDF-1.7';
+
+    public function getSemanticVersion(): string
+    {
+        return str_replace('PDF-', '', $this->value);
+    }
 }

@@ -15,7 +15,7 @@ final class NumericObject implements ReferableObjectInterface
 
     public function compile(): string
     {
-        return (string) $this->value;
+        return (string)$this->value;
     }
 
     public function getValue(): int|float

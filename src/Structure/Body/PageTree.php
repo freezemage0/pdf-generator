@@ -2,12 +2,8 @@
 
 namespace Freezemage\PdfGenerator\Structure\Body;
 
-use Freezemage\PdfGenerator\Exception\InvalidObjectTypeException;
 use Freezemage\PdfGenerator\Object\Collection\ArrayObject;
 use Freezemage\PdfGenerator\Object\Collection\DictionaryObject;
-use Freezemage\PdfGenerator\Object\IndirectObject;
-use Freezemage\PdfGenerator\Object\IndirectReference;
-use Freezemage\PdfGenerator\Object\ObjectInterface;
 use Freezemage\PdfGenerator\Object\ReferableObjectImplementation;
 use Freezemage\PdfGenerator\Object\ReferableObjectInterface;
 use Freezemage\PdfGenerator\Object\Scalar\NameObject;
