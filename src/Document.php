@@ -12,8 +12,8 @@ use Freezemage\PdfGenerator\Structure\Header;
 use Freezemage\PdfGenerator\Structure\Header\Version;
 use Freezemage\PdfGenerator\Structure\Trailer;
 use Freezemage\PdfGenerator\Version\Comparator;
+use Freezemage\PdfGenerator\Version\Constraint\Evaluator;
 use Freezemage\PdfGenerator\Version\ConstraintException;
-use Freezemage\PdfGenerator\Version\Evaluator;
 
 final class Document
 {

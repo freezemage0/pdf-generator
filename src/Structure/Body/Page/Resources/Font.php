@@ -5,6 +5,7 @@ namespace Freezemage\PdfGenerator\Structure\Body\Page\Resources;
 use Freezemage\PdfGenerator\Exception\InvalidObjectTypeException;
 use Freezemage\PdfGenerator\Object\Collection\DictionaryObject;
 use Freezemage\PdfGenerator\Object\IndirectReference;
+use Freezemage\PdfGenerator\Object\OperatesWithIndirectReferences;
 use Freezemage\PdfGenerator\Object\ReferableObjectImplementation;
 use Freezemage\PdfGenerator\Object\ReferableObjectInterface;
 use Freezemage\PdfGenerator\Object\Scalar\NameObject;
@@ -12,6 +13,7 @@ use Freezemage\PdfGenerator\Object\Scalar\NameObject;
 final class Font implements ReferableObjectInterface
 {
     use ReferableObjectImplementation;
+    use OperatesWithIndirectReferences;
 
     private NameObject|IndirectReference $name;
     private NameObject|IndirectReference $subType;
@@ -44,9 +46,7 @@ final class Font implements ReferableObjectInterface
      */
     public function setName(IndirectReference|NameObject $name): void
     {
-        if ($name instanceof IndirectReference && !$name->isOfType(NameObject::class)) {
-            throw InvalidObjectTypeException::create('Name', 'name');
-        }
+        $this->validateType($name, NameObject::class, 'name');
 
         $this->name = $name;
     }
@@ -61,9 +61,7 @@ final class Font implements ReferableObjectInterface
      */
     public function setSubtype(IndirectReference|NameObject $subtype): void
     {
-        if ($subtype instanceof IndirectReference && !$subtype->isOfType(NameObject::class)) {
-            throw InvalidObjectTypeException::create('SubType', 'name');
-        }
+        $this->validateType($subtype, NameObject::class, 'Subtype');
 
         $this->subType = $subtype;
     }
@@ -73,9 +71,7 @@ final class Font implements ReferableObjectInterface
      */
     public function setBaseFont(IndirectReference|NameObject $baseFont): void
     {
-        if ($baseFont instanceof IndirectReference && !$baseFont->isOfType(NameObject::class)) {
-            throw InvalidObjectTypeException::create('BaseFont', 'name');
-        }
+        $this->validateType($baseFont, NameObject::class, 'BaseFont');
 
         $this->baseFont = $baseFont;
     }

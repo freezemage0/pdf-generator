@@ -6,8 +6,8 @@ use Freezemage\PdfGenerator\Exception\InvalidObjectTypeException;
 use Freezemage\PdfGenerator\Object\IndirectObject;
 use Freezemage\PdfGenerator\Structure\Body\DocumentCatalog;
 use Freezemage\PdfGenerator\Structure\Body\PageTree;
+use Freezemage\PdfGenerator\Version\Constraint\Evaluator;
 use Freezemage\PdfGenerator\Version\ConstraintException;
-use Freezemage\PdfGenerator\Version\Evaluator;
 use Freezemage\PdfGenerator\Version\VersionDependentInterface;
 
 final class Body

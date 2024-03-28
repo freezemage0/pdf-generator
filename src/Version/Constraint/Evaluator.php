@@ -1,8 +1,11 @@
 <?php
 
-namespace Freezemage\PdfGenerator\Version;
+namespace Freezemage\PdfGenerator\Version\Constraint;
 
 use Freezemage\PdfGenerator\Structure\Header\Version;
+use Freezemage\PdfGenerator\Version\Comparator;
+use Freezemage\PdfGenerator\Version\ConstraintException;
+use Freezemage\PdfGenerator\Version\VersionDependentInterface;
 
 final class Evaluator
 {
