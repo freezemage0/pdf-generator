@@ -14,6 +14,7 @@ use Freezemage\PdfGenerator\Structure\Trailer;
 use Freezemage\PdfGenerator\Version\Comparator;
 use Freezemage\PdfGenerator\Version\Constraint\Evaluator;
 use Freezemage\PdfGenerator\Version\ConstraintException;
+use RuntimeException;
 
 final class Document
 {
@@ -66,7 +67,12 @@ final class Document
         fwrite($descriptor, $compiledXrefTable);
 
         $trailer = new Trailer();
-        $trailer->setRoot($this->body->documentCatalog->toIndirectReference());
+        try {
+            $trailer->setRoot($this->body->documentCatalog->toIndirectReference());
+        } catch (Exception\InvalidObjectTypeException $e) {
+            throw new RuntimeException($e->getMessage(), $e->getCode(), $e);
+        }
+
         $trailer->setSize(new NumericObject($this->crossReferenceTable->count()));
         $trailer->setLastXrefSectionOffset(strlen($compiledBody));
 

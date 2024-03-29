@@ -46,7 +46,7 @@ class Stream implements ReferableObjectInterface, VersionDependentInterface
         $this->content = $content;
     }
 
-    public function addFilter(FilterInterface ...$filters): void
+    public function addFilters(FilterInterface ...$filters): void
     {
         foreach ($filters as $filter) {
             $this->filters[] = $filter;
@@ -111,7 +111,10 @@ class Stream implements ReferableObjectInterface, VersionDependentInterface
 
         $decodeParamsCount = $decodeParams->count();
         if ($decodeParamsCount !== 0) {
-            $dictionary->set(new NameObject('DecodeParams'), ($decodeParamsCount === 1) ? $decodeParams->pop() : $decodeParams);
+            $dictionary->set(
+                new NameObject('DecodeParams'),
+                ($decodeParamsCount === 1) ? $decodeParams->pop() : $decodeParams
+            );
         }
 
         return $dictionary;
@@ -121,7 +124,7 @@ class Stream implements ReferableObjectInterface, VersionDependentInterface
     {
         $constraints = [];
         if (isset($this->decodedLength)) {
-            $constraints[] = new AvailableSince('DL (Decode Length)', Version::PDF_1_5);
+            $constraints[] = new AvailableSince('DL (Decode Length) in a stream', Version::PDF_1_5);
         }
 
         return $constraints;

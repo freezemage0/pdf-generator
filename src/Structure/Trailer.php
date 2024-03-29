@@ -2,12 +2,14 @@
 
 namespace Freezemage\PdfGenerator\Structure;
 
+use Freezemage\PdfGenerator\Exception\InvalidObjectTypeException;
 use Freezemage\PdfGenerator\Exception\MissingRequiredArgumentException;
 use Freezemage\PdfGenerator\Object\Collection\DictionaryObject;
 use Freezemage\PdfGenerator\Object\IndirectReference;
 use Freezemage\PdfGenerator\Object\ObjectInterface;
 use Freezemage\PdfGenerator\Object\Scalar\NameObject;
 use Freezemage\PdfGenerator\Object\Scalar\NumericObject;
+use Freezemage\PdfGenerator\Structure\Body\DocumentCatalog;
 
 final class Trailer implements ObjectInterface
 {
@@ -24,8 +26,15 @@ final class Trailer implements ObjectInterface
         $this->size = $size;
     }
 
+    /**
+     * @throws InvalidObjectTypeException
+     */
     public function setRoot(IndirectReference $root): void
     {
+        if (!($root->object instanceof DocumentCatalog)) {
+            throw InvalidObjectTypeException::create('Root', 'DocumentCatalog');
+        }
+
         $this->root = $root;
     }
 

@@ -9,6 +9,7 @@ use Freezemage\PdfGenerator\Object\IndirectReference;
 use Freezemage\PdfGenerator\Object\OperatesWithIndirectReferences;
 use Freezemage\PdfGenerator\Object\ReferableObjectImplementation;
 use Freezemage\PdfGenerator\Object\ReferableObjectInterface;
+use Freezemage\PdfGenerator\Object\Scalar\HexadecimalStringObject;
 use Freezemage\PdfGenerator\Object\Scalar\NameObject;
 use Freezemage\PdfGenerator\Object\Scalar\NumericObject;
 use Freezemage\PdfGenerator\Structure\Header\Version;
@@ -20,9 +21,11 @@ final class Descriptor implements ReferableObjectInterface, VersionDependentInte
     use OperatesWithIndirectReferences;
     use ReferableObjectImplementation;
 
+    private NameObject|IndirectReference $fontName;
+    private HexadecimalStringObject|IndirectReference $fontFamily;
+    private NumericObject|IndirectReference $fontWeight;
     /** @var array<DescriptorFlag> */
     private array $flags = [];
-    private NameObject|IndirectReference $fontName;
 
     /**
      * @throws InvalidObjectTypeException
@@ -80,14 +83,14 @@ final class Descriptor implements ReferableObjectInterface, VersionDependentInte
 
     public function getConstraints(): array
     {
-        $constraints = [
-            isset($this->fontWeight) => new AvailableSince(
-                'FontWeight property of Font Descriptor object',
+        $constraints = [];
+        if (isset($this->fontWeight)) {
+            $constraints[] = new AvailableSince(
+                'FontWeight entry for FontDescriptor dictionary',
                 Version::PDF_1_5
-            ),
+            );
+        }
 
-        ];
-
-        return array_filter($constraints, mode: ARRAY_FILTER_USE_KEY);
+        return $constraints;
     }
 }
