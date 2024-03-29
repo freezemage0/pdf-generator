@@ -32,7 +32,7 @@ class Stream implements ReferableObjectInterface, VersionDependentInterface
      */
     public function setLength(NumericObject|IndirectReference $length): void
     {
-        $this->validateType($length, NumericObject::class);
+        $this->assertType($length, NumericObject::class);
 
         if ($length->getValue() < 0) {
             throw InvalidArgumentValueException::createPositiveInteger('Length');
@@ -59,7 +59,7 @@ class Stream implements ReferableObjectInterface, VersionDependentInterface
      */
     public function setDecodedLength(NumericObject|IndirectReference $decodedLength): void
     {
-        $this->validateType($decodedLength, NumericObject::class);
+        $this->assertType($decodedLength, NumericObject::class);
 
         if ($decodedLength->getValue() < 0) {
             throw InvalidArgumentValueException::createPositiveInteger('DL (decoded length)');

@@ -9,7 +9,7 @@ trait OperatesWithIndirectReferences
     /**
      * @throws InvalidObjectTypeException
      */
-    protected function validateType(ObjectInterface $object, string $expectedType, string $objectName = ''): void
+    protected function assertType(ObjectInterface $object, string $expectedType, string $objectName = ''): void
     {
         if ($object instanceof IndirectReference) {
             $object = $object->object;

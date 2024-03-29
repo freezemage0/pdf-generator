@@ -6,17 +6,17 @@ use Freezemage\PdfGenerator\Structure\Header\Version;
 use Freezemage\PdfGenerator\Version\Comparator;
 use Freezemage\PdfGenerator\Version\ConstraintInterface;
 
-final class AvailableSince implements ConstraintInterface
+final class ObsoleteSince implements ConstraintInterface
 {
     public function __construct(
-        public readonly string $name,
-        public readonly Version $availableSince
+        private readonly Version $obsoleteSince,
+        private readonly string $name
     ) {
     }
 
     public function evaluate(Version $currentVersion, Comparator $comparator): bool
     {
-        return $comparator->isLower($currentVersion, $this->availableSince, true);
+        return $comparator->isGreater($currentVersion, $this->obsoleteSince);
     }
 
     public function getName(): string
@@ -26,6 +26,6 @@ final class AvailableSince implements ConstraintInterface
 
     public function getPrintableConstraint(): string
     {
-        return "available since version {$this->availableSince->value}";
+        return "obsolete since {$this->obsoleteSince->value}";
     }
 }

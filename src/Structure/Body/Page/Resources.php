@@ -9,21 +9,43 @@ use Freezemage\PdfGenerator\Object\IndirectReference;
 use Freezemage\PdfGenerator\Object\ObjectInterface;
 use Freezemage\PdfGenerator\Object\Scalar\NameObject;
 use Freezemage\PdfGenerator\Structure\Body\Page\Resources\Font;
+use Freezemage\PdfGenerator\Structure\Body\Page\Resources\Pattern;
 use Freezemage\PdfGenerator\Structure\Body\Page\Resources\Procedure;
 
 final class Resources implements ObjectInterface
 {
     private DictionaryObject $font;
+    private DictionaryObject $pattern;
     private ArrayObject $procedureSet;
 
     public function __construct()
     {
         $this->font = new DictionaryObject();
+        $this->pattern = new DictionaryObject();
         $this->procedureSet = new ArrayObject();
     }
 
     /**
-     * @param IndirectReference<Font>|Font $font
+     * @throws InvalidObjectTypeException
+     */
+    public function addPattern(IndirectReference|Pattern $pattern): void
+    {
+        if ($pattern instanceof IndirectReference) {
+            $origin = $pattern->getOrigin();
+            if (!($origin instanceof Pattern)) {
+                throw InvalidObjectTypeException::create('Pattern', 'pattern');
+            }
+
+            $name = $origin->getName();
+        } else {
+            $name = $pattern->getName();
+        }
+
+        $this->pattern->set($name, $pattern);
+    }
+
+    /**
+     * @param IndirectReference|Font $font
      *
      * @throws InvalidObjectTypeException
      */
@@ -60,6 +82,10 @@ final class Resources implements ObjectInterface
 
         if (!$this->procedureSet->isEmpty()) {
             $dictionary->set(new NameObject('ProcSet'), $this->procedureSet);
+        }
+
+        if (!$this->pattern->isEmpty()) {
+            $dictionary->set(new NameObject('Pattern'), $this->pattern);
         }
 
         return $dictionary;

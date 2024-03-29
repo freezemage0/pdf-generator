@@ -7,6 +7,7 @@ use Freezemage\PdfGenerator\Exception\MissingRequiredArgumentException;
 use Freezemage\PdfGenerator\Object\Collection\DictionaryObject;
 use Freezemage\PdfGenerator\Object\Graphical\Rectangle;
 use Freezemage\PdfGenerator\Object\IndirectReference;
+use Freezemage\PdfGenerator\Object\OperatesWithIndirectReferences;
 use Freezemage\PdfGenerator\Object\ReferableObjectImplementation;
 use Freezemage\PdfGenerator\Object\ReferableObjectInterface;
 use Freezemage\PdfGenerator\Object\Scalar\NameObject;
@@ -15,6 +16,7 @@ use Freezemage\PdfGenerator\Structure\Body\Page\Resources;
 
 final class PageObject implements ReferableObjectInterface
 {
+    use OperatesWithIndirectReferences;
     use ReferableObjectImplementation;
 
     private PageTree $parent;
@@ -50,9 +52,7 @@ final class PageObject implements ReferableObjectInterface
      */
     public function setResources(IndirectReference|Resources $resources): void
     {
-        if ($resources instanceof IndirectReference && !$resources->isOfType(Resources::class)) {
-            throw InvalidObjectTypeException::create('Resources', 'resources');
-        }
+        $this->assertType($resources, Resources::class, 'Resources');
 
         $this->resources = $resources;
     }

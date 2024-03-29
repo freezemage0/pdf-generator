@@ -12,7 +12,7 @@ final class ConstraintException extends Exception implements ExceptionInterface
     {
         return new ConstraintException(
             sprintf(
-                "Feature '%s' is unavailable for current version (%s). Feature is available %s",
+                "Feature '%s' is unavailable for current version (%s). Feature is %s",
                 $constraint->getName(),
                 $currentVersion->value,
                 $constraint->getPrintableConstraint()

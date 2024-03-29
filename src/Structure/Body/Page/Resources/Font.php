@@ -9,6 +9,7 @@ use Freezemage\PdfGenerator\Object\OperatesWithIndirectReferences;
 use Freezemage\PdfGenerator\Object\ReferableObjectImplementation;
 use Freezemage\PdfGenerator\Object\ReferableObjectInterface;
 use Freezemage\PdfGenerator\Object\Scalar\NameObject;
+use Freezemage\PdfGenerator\Structure\Body\Page\Resources\Font\Descriptor;
 
 final class Font implements ReferableObjectInterface
 {
@@ -18,6 +19,7 @@ final class Font implements ReferableObjectInterface
     private NameObject|IndirectReference $name;
     private NameObject|IndirectReference $subType;
     private NameObject|IndirectReference $baseFont;
+    private Descriptor|IndirectReference $descriptor;
 
     /**
      * @throws InvalidObjectTypeException
@@ -46,7 +48,7 @@ final class Font implements ReferableObjectInterface
      */
     public function setName(IndirectReference|NameObject $name): void
     {
-        $this->validateType($name, NameObject::class, 'name');
+        $this->assertType($name, NameObject::class, 'name');
 
         $this->name = $name;
     }
@@ -61,7 +63,7 @@ final class Font implements ReferableObjectInterface
      */
     public function setSubtype(IndirectReference|NameObject $subtype): void
     {
-        $this->validateType($subtype, NameObject::class, 'Subtype');
+        $this->assertType($subtype, NameObject::class, 'Subtype');
 
         $this->subType = $subtype;
     }
@@ -71,9 +73,19 @@ final class Font implements ReferableObjectInterface
      */
     public function setBaseFont(IndirectReference|NameObject $baseFont): void
     {
-        $this->validateType($baseFont, NameObject::class, 'BaseFont');
+        $this->assertType($baseFont, NameObject::class, 'BaseFont');
 
         $this->baseFont = $baseFont;
+    }
+
+    /**
+     * @throws InvalidObjectTypeException
+     */
+    public function setDescriptor(IndirectReference|Descriptor $descriptor): void
+    {
+        $this->assertType($descriptor, Descriptor::class, 'Descriptor');
+
+        $this->descriptor = $descriptor;
     }
 
     public function getValue(): DictionaryObject
@@ -88,6 +100,9 @@ final class Font implements ReferableObjectInterface
         }
         if (isset($this->name)) {
             $dictionary->set(new NameObject('Name'), $this->name);
+        }
+        if (isset($this->descriptor)) {
+            $dictionary->set(new NameObject('Descriptor'), $this->descriptor);
         }
 
         return $dictionary;

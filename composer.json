@@ -1,21 +1,22 @@
 {
-    "name": "freezemage0/pdf-generator",
-    "description": "Low-level PDF generator",
-    "minimum-stability": "stable",
-    "license": "proprietary",
-    "authors": [
-        {
-            "name": "Freezemage",
-            "email": "freezemage0@gmail.com"
-        }
-    ],
-    "require": {
-        "php": ">=8.1",
-      "ext-intl": "*"
-    },
-    "autoload": {
-        "psr-4": {
-            "Freezemage\\PdfGenerator\\": "src/"
-        }
+  "name": "freezemage0/pdf-generator",
+  "description": "Low-level PDF generator",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Freezemage",
+      "email": "freezemage0@gmail.com"
     }
+  ],
+  "require": {
+    "php": ">=8.1",
+    "ext-intl": "*",
+    "ext-mbstring": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Freezemage\\PdfGenerator\\": "src/"
+    }
+  }
 }

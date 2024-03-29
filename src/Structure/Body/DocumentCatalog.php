@@ -6,12 +6,14 @@ use Freezemage\PdfGenerator\Exception\InvalidObjectTypeException;
 use Freezemage\PdfGenerator\Exception\MissingRequiredArgumentException;
 use Freezemage\PdfGenerator\Object\Collection\DictionaryObject;
 use Freezemage\PdfGenerator\Object\IndirectReference;
+use Freezemage\PdfGenerator\Object\OperatesWithIndirectReferences;
 use Freezemage\PdfGenerator\Object\ReferableObjectImplementation;
 use Freezemage\PdfGenerator\Object\ReferableObjectInterface;
 use Freezemage\PdfGenerator\Object\Scalar\NameObject;
 
 final class DocumentCatalog implements ReferableObjectInterface
 {
+    use OperatesWithIndirectReferences;
     use ReferableObjectImplementation;
 
     private IndirectReference $rootPage;
@@ -26,9 +28,7 @@ final class DocumentCatalog implements ReferableObjectInterface
      */
     public function setRootPage(IndirectReference $rootPage): void
     {
-        if (!$rootPage->isOfType(PageTree::class)) {
-            throw InvalidObjectTypeException::create('Root Page', 'page tree');
-        }
+        $this->assertType($rootPage, PageTree::class, 'Page Tree');
 
         $this->rootPage = $rootPage;
     }

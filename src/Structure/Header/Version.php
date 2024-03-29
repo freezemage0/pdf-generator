@@ -15,6 +15,7 @@ enum Version: string
 
     public function getSemanticVersion(): string
     {
-        return str_replace('PDF-', '', $this->value);
+        static $semanticVersion;
+        return $semanticVersion ??= str_replace('PDF-', '', $this->value);
     }
 }
